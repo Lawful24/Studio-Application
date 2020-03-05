@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "609835254579",
+    "firebase_url": "https://studio-application-1956.firebaseio.com",
+    "project_id": "studio-application-1956",
+    "storage_bucket": "studio-application-1956.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609835254579:android:18630977635a0d81ec7446",
+        "android_client_info": {
+          "package_name": "com.TAGStudio.studio_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "609835254579-9nmql5ln8nb1qcu2ocir28bealr18ndn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB1evfmdCPK6AFjFbd1cRzrvLl_JIGZCU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "609835254579-9nmql5ln8nb1qcu2ocir28bealr18ndn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
