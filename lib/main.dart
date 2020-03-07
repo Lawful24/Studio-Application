@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:studio_application/pages/home/wrapper.dart';
-import 'package:studio_application/pages/loading.dart';
+import 'package:studio_application/shared/loading.dart';
 import 'package:studio_application/pages/login.dart';
 import 'package:studio_application/pages/home/home.dart';
 import 'package:studio_application/pages/request.dart';

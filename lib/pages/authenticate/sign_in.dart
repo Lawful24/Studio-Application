@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:studio_application/services/auth.dart';
 import 'package:studio_application/shared/constants.dart';
+import 'package:studio_application/shared/loading.dart';
 
 class SignIn extends StatefulWidget {
 
@@ -17,7 +18,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       backgroundColor: Colors.blue[800],
       appBar: AppBar(
         backgroundColor: Colors.white,
