@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:studio_application/pages/loading.dart';
-//import 'package:studio_application/pages/login.dart';
-import 'package:studio_application/pages/home.dart';
+import 'package:provider/provider.dart';
+import 'package:studio_application/pages/home/wrapper.dart';
+import 'package:studio_application/shared/loading.dart';
+import 'package:studio_application/pages/login.dart';
+import 'package:studio_application/pages/home/home.dart';
 import 'package:studio_application/pages/request.dart';
 import 'package:studio_application/pages/blacklist.dart';
 import 'package:studio_application/pages/feedback.dart';
 import 'package:studio_application/pages/id.dart';
+import 'package:studio_application/services/auth.dart';
+import 'models/user.dart';
 
-void main() => runApp(MaterialApp(
-  initialRoute: '/',
+void main() => runApp(MyApp(
+  /*initialRoute: '/',
   routes: {
     '/': (context) => Loading(),
     '/home': (context) => Home(),
@@ -16,6 +20,17 @@ void main() => runApp(MaterialApp(
     '/blacklist': (context) => Blacklist(),
     '/feedback': (context) => FeedbackPage(),
     '/contact': (context) => Contact()
-  },
+  },*/
 ));
-//TODO: android/build.gradle has 4.0.1 in dependencies, might need to revert to 4.3.3
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<User>.value(
+      value: AuthService().user,
+      child: MaterialApp(
+        home: Wrapper(),
+      ),
+    );
+  }
+}
