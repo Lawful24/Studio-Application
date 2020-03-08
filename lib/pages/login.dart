@@ -1,1 +1,0 @@
-//TODO: watch the tutorial, login layout, Firebase stuff
