@@ -65,7 +65,7 @@ class _SignInState extends State<SignIn> {
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'Password'),
                 obscureText: true,
-                validator: (val) => val.isEmpty ? 'Enter an email' : null,
+                validator: (val) => val.isEmpty ? 'Enter a password' : null,
                 onChanged: (val) {
                   setState(() => password = val);
                 },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:studio_application/services/song.dart';
+import 'package:studio_application/models/song.dart';
 
 class Blacklist extends StatefulWidget {
   @override
@@ -9,7 +9,7 @@ class Blacklist extends StatefulWidget {
 class _BlacklistState extends State<Blacklist> {
 
   List<Song> blacklist = [
-    Song(title: 'Never Gonna Give You Up', author: 'Rick Astley', duration: '3:33', isExplicit: false)
+    Song(title: 'Never Gonna Give You Up', author: 'Rick Astley', duration: '3:33', isExplicit: false),
   ]; //TODO: import the api
 
   @override
