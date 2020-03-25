@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:studio_application/admin_pages/admin_home.dart';
 import 'package:studio_application/models/user.dart';
 import 'package:studio_application/authenticate/authenticate.dart';
 import 'package:studio_application/home/home.dart';
@@ -14,7 +15,11 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return Authenticate();
     } else {
-      return Home();
+      if (user.uid == 'K2JVVw1IlXPFZc0QOMKnYSSiHk13') {
+        return AdminHome();
+      } else {
+        return Home();
+      }
     }
   }
 }

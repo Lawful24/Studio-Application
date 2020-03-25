@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studio_application/models/request.dart';
 import 'package:studio_application/models/user.dart';
 import 'package:studio_application/shared/constants.dart';
 import 'package:studio_application/services/database.dart';
@@ -19,6 +20,7 @@ class _RequestPageState extends State<RequestPage> {
   String date = ''; //todo: format?
   String url = '';
   String error = '';
+  Request request;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +78,7 @@ class _RequestPageState extends State<RequestPage> {
                 onPressed: () async {
                   if(_formKey.currentState.validate()) {
                     setState(() {
-                      //DatabaseService().updateUserData(name, requests);//todo: figure this out and finish the setState
+                      //DatabaseService().updateUserData(name, requests); //todo: figure this out and finish the setState
                     });
                   }
                 },

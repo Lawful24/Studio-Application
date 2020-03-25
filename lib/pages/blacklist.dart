@@ -9,7 +9,7 @@ class Blacklist extends StatefulWidget {
 class _BlacklistState extends State<Blacklist> {
 
   List<Song> blacklist = [
-    Song(title: 'Never Gonna Give You Up', author: 'Rick Astley', duration: '3:33', isExplicit: false),
+    Song(title: 'Never Gonna Give You Up', artist: 'Rick Astley', duration: '3:33', isExplicit: false),
   ]; //TODO: import the api
 
   @override
@@ -55,7 +55,7 @@ class _BlacklistState extends State<Blacklist> {
                     ),
                     SizedBox(height: 4.0),
                     Text(
-                      blacklist[index].author
+                      blacklist[index].artist
                     ),
                   ],
                 )

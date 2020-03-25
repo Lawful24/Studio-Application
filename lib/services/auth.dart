@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:studio_application/models/request.dart';
 import 'package:studio_application/models/user.dart';
 import 'package:studio_application/services/database.dart';
 
@@ -48,7 +49,12 @@ class AuthService {
       FirebaseUser user = result.user;
 
       // create a new document for the user with the uid
-      await DatabaseService(uid: user.uid).updateUserData(email, null);
+      String title = '';
+      String artist = '';
+      String date = '';
+      String url = '';
+      //requests.add(new Request(title: 'asd', artist: 'asd', date: 'asd')); // collection wont be created in firestore
+      await DatabaseService(uid: user.uid).updateUserData(title, artist, date, url);
       return _userFromFirebaseUser(user);
     } catch(e) {
       print(e.toString());
@@ -65,5 +71,4 @@ class AuthService {
       return null;
     }
   }
-
 }

@@ -6,5 +6,4 @@ class Request {
   String url;
 
   Request({ this.title, this.artist, this.date, this.url });
-
 }

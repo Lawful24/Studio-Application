@@ -9,10 +9,12 @@ class DatabaseService {
   // collection reference
   final CollectionReference requestCollection = Firestore.instance.collection('requests');
 
-  Future updateUserData(String name, List<Request> requests) async {
+  Future updateUserData(String title, String artist, String date, String url) async { //todo: the issue is here. we should edit requests
     return await requestCollection.document(uid).setData({
-      'name': name,
-      'requests': requests
+      'title': title,
+      'artist': artist,
+      'date': date,
+      'url': url
     });
   }
 
