@@ -1,9 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:studio_application/models/request.dart';
-import 'package:studio_application/models/user.dart';
 import 'package:studio_application/shared/constants.dart';
-import 'package:studio_application/services/database.dart';
-import 'package:studio_application/services/auth.dart';
 
 class RequestPage extends StatefulWidget {
   @override
@@ -21,6 +19,8 @@ class _RequestPageState extends State<RequestPage> {
   String url = '';
   String error = '';
   Request request;
+
+  int numOfRequestsMonthly = 0; //todo: unique request id
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class _RequestPageState extends State<RequestPage> {
             children: <Widget>[
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'Title'),
-                validator: (val) => val.isEmpty ? 'Enter the artist' : null,
+                validator: (val) => val.isEmpty ? 'Enter the title' : null,
                 onChanged: (val) {
                   setState(() => title = val);
                 }
@@ -60,7 +60,7 @@ class _RequestPageState extends State<RequestPage> {
               SizedBox(height: 20.0),
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'Date'), //todo: format?
-                validator: (val) => val.isEmpty ? 'Enter the artist' : null,
+                validator: (val) => val.isEmpty ? 'Enter the date' : null,
                 onChanged: (val) {
                   setState(() => date = val);
                 }
@@ -68,7 +68,6 @@ class _RequestPageState extends State<RequestPage> {
               SizedBox(height: 20.0),
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'Link (optional)'),
-                //validator: (val) => val.isEmpty ? 'Enter the artist' : null,
                 onChanged: (val) {
                   setState(() => url = val);
                 }
@@ -78,7 +77,14 @@ class _RequestPageState extends State<RequestPage> {
                 onPressed: () async {
                   if(_formKey.currentState.validate()) {
                     setState(() {
-                      //DatabaseService().updateUserData(name, requests); //todo: figure this out and finish the setState
+                      numOfRequestsMonthly++;
+                      Firestore.instance.collection('requests').document(numOfRequestsMonthly.toString()).setData({
+                        'title': title,
+                        'artist': artist,
+                        'date': date,
+                        'url': url
+                      });
+                      //todo: figure this out and finish the setState
                     });
                   }
                 },

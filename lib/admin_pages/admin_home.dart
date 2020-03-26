@@ -32,7 +32,7 @@ class _AdminHomeState extends State<AdminHome> {
               await _auth.signOut();
             },
             icon: Icon(Icons.person),
-            label: Text('logout'),
+            label: Text('Log out'),
           ),
         ],
       ),
