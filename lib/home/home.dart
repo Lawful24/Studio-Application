@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 import 'package:studio_application/pages/blacklist.dart';
 import 'package:studio_application/pages/id.dart';
 import 'package:studio_application/pages/request_page.dart';
 import 'package:studio_application/pages/feedback.dart';
 import 'package:studio_application/services/auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:studio_application/services/database.dart';
 
 class Home extends StatefulWidget {
   @override

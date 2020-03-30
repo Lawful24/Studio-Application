@@ -9,15 +9,6 @@ class DatabaseService {
   // collection reference
   final CollectionReference requestCollection = Firestore.instance.collection('requests');
 
-  Future updateUserData(String title, String artist, String date, String url) async { //todo: the issue is here. we should edit requests
-    return await requestCollection.document(uid).setData({
-      'title': title,
-      'artist': artist,
-      'date': date,
-      'url': url
-    });
-  }
-
   // request list from snapshot
   List<Request> _requestListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) {
@@ -26,6 +17,7 @@ class DatabaseService {
         artist: doc.data['artist'],
         date: doc.data['date'],
         url: doc.data['url'] ?? '',
+        serialNumber: doc.data['serialNumber']
       );
     });
   }
