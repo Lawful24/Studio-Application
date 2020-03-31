@@ -4,7 +4,7 @@ class Request {
   String artist;
   String date; //todo: format?
   String url;
-  String serialNumber;
+  String id;
 
-  Request({ this.title, this.artist, this.date, this.url,  this.serialNumber });
+  Request({ this.title, this.artist, this.date, this.url,  this.id });
 }

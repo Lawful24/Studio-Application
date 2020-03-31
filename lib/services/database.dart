@@ -17,7 +17,7 @@ class DatabaseService {
         artist: doc.data['artist'],
         date: doc.data['date'],
         url: doc.data['url'] ?? '',
-        serialNumber: doc.data['serialNumber']
+        id: doc.data['id']
       );
     });
   }

@@ -16,18 +16,35 @@ class _RequestPageState extends State<RequestPage> {
   String artist = '';
   String date = ''; //todo: format?
   String url = '';
-  String serialNumber;
   String error = '';
   static CollectionReference requestCollection = Firestore.instance.collection('requests');
   DocumentReference snDocRef = requestCollection.document('0000');
 
-  incrementSerialNumber() {
+  incrementReqNum() {
     Firestore.instance.runTransaction((transaction) async {
       DocumentSnapshot freshSnap = await transaction.get(snDocRef);
       await transaction.update(freshSnap.reference, {
         'numOfRequests': freshSnap['numOfRequests'] + 1
       });
     });
+  }
+
+  String generateRequestID(int numReq) {
+    DateTime now = DateTime.now();
+    String monthComponent;
+    String nR;
+    if (now.month < 10) {
+      monthComponent = '0' + now.month.toString();
+    } else {
+      monthComponent = now.month.toString();
+    }
+
+    if (numReq < 10) {
+      nR = '0' + numReq.toString();
+    } else {
+      nR = numReq.toString();
+    }
+    return monthComponent + nR;
   }
 
   int numOfRequestsMonthly = 0; //todo: unique request id
@@ -90,15 +107,15 @@ class _RequestPageState extends State<RequestPage> {
                     onPressed: () async {
                       if(_formKey.currentState.validate()) {
                         setState(() {
-                          snDocRef.updateData(incrementSerialNumber());
-                          int snNum = snapshot.data.documents[0]['numOfRequests'] + 1;
-                          serialNumber = snNum.toString();
-                          requestCollection.document(serialNumber).setData({
+                          snDocRef.setData(incrementReqNum());
+                          int numOfRequests = (snapshot.data.documents[0]['numOfRequests'] + 1);
+                          String requestID = generateRequestID(numOfRequests);
+                          requestCollection.document(requestID).setData({
                             'title': title,
                             'artist': artist,
                             'date': date,
                             'url': url,
-                            'serialNumber': serialNumber
+                            'id': requestID
                           });
                         });
                       }
