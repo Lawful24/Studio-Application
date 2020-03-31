@@ -14,7 +14,8 @@ class _RequestPageState extends State<RequestPage> {
   // text field state
   String title = '';
   String artist = '';
-  String date = ''; //todo: format?
+  DateTime date = DateTime.now();
+  String dateString = "${DateTime.now()}".split(' ')[0];
   String url = '';
   String error = '';
   static CollectionReference requestCollection = Firestore.instance.collection('requests');
@@ -47,7 +48,19 @@ class _RequestPageState extends State<RequestPage> {
     return monthComponent + nR;
   }
 
-  int numOfRequestsMonthly = 0; //todo: unique request id
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+        lastDate: DateTime(DateTime.now().year + 2) // needs adjustment in the future
+    );
+    if (picked != null && picked != date)
+      setState(() {
+        date = picked;
+        dateString = "$date".split(' ')[0];
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,12 +101,18 @@ class _RequestPageState extends State<RequestPage> {
                     }
                   ),
                   SizedBox(height: 20.0),
-                  TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Date'), //todo: format?
-                    validator: (val) => val.isEmpty ? 'Enter the date' : null,
-                    onChanged: (val) {
-                      setState(() => date = val);
-                    }
+                  Row(
+                    children: <Widget>[
+                      RaisedButton(
+                          child: Text('Pick a date'),
+                          color: Colors.white,
+                          onPressed: () => _selectDate(context)
+                      ),
+
+                      // todo: row alignment
+
+                      Text(("$date".split(' ')[0]))
+                    ],
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
@@ -113,7 +132,7 @@ class _RequestPageState extends State<RequestPage> {
                           requestCollection.document(requestID).setData({
                             'title': title,
                             'artist': artist,
-                            'date': date,
+                            'date': dateString,
                             'url': url,
                             'id': requestID
                           });

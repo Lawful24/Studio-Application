@@ -26,5 +26,4 @@ class DatabaseService {
   Stream<List<Request>> get requests {
     return requestCollection.snapshots().map(_requestListFromSnapshot);
   }
-
 }

@@ -2,7 +2,7 @@ class Request {
 
   String title;
   String artist;
-  String date; //todo: format?
+  DateTime date;
   String url;
   String id;
 
