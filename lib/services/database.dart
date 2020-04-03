@@ -16,6 +16,7 @@ class DatabaseService {
         title: doc.data['title'],
         artist: doc.data['artist'],
         date: doc.data['date'],
+        period: doc.data['period'],
         url: doc.data['url'] ?? '',
         id: doc.data['id']
       );

@@ -11,33 +11,65 @@ class _RequestPageState extends State<RequestPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  // text field state
+  // Text field state
   String title = '';
   String artist = '';
-  DateTime date = DateTime.now();
-  String dateString = "${DateTime.now()}".split(' ')[0];
   String url = '';
   String error = '';
-  static CollectionReference requestCollection = Firestore.instance.collection('requests');
-  DocumentReference snDocRef = requestCollection.document('0000');
 
-  incrementReqNum() {
+  // Date picker and drop-down
+  DateTime date = DateTime.now();
+  String dateString = "${DateTime.now()}".split(' ')[0];
+  static List<String> periods = ['2. (9:40 - 9:45)', '3. (10:35 - 10:55)', '4. (11:40 - 11:50)', '5. (12:35 - 12:45)'];
+  String period = '';
+  String dropdownValue;
+
+  // Database path references
+  static CollectionReference requestCollection = Firestore.instance.collection('requests');
+  DocumentReference counterDocRef = requestCollection.document('0000');
+
+  updateCounter(int currentMonth) {
+
+    // Logic to update the month parameter in the counter document
     Firestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot freshSnap = await transaction.get(snDocRef);
-      await transaction.update(freshSnap.reference, {
-        'numOfRequests': freshSnap['numOfRequests'] + 1
+      DocumentSnapshot freshSnap = await transaction.get(counterDocRef);
+
+      int snapMonthData = freshSnap.data['month'];
+
+      // Resets the number of requests every month
+      if (snapMonthData != currentMonth) {
+        if (snapMonthData == 12) {
+          transaction.update(freshSnap.reference, {
+            'numOfRequests': 0,
+            'month': currentMonth,
+          });
+        } else {
+          transaction.update(freshSnap.reference, {
+            'numOfRequests': 0,
+            'month': currentMonth,
+          });
+        }
+      }
+    });
+
+    // Increment the number of requests in the counter document
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot freshSnap = await transaction.get(counterDocRef);
+      transaction.update(counterDocRef, {
+        'numOfRequests': freshSnap['numOfRequests'] + 1,
       });
     });
   }
 
-  String generateRequestID(int numReq) {
-    DateTime now = DateTime.now();
+  // Custom ID generator
+  String generateRequestID(int numReq, int currentMonth) {
     String monthComponent;
     String nR;
-    if (now.month < 10) {
-      monthComponent = '0' + now.month.toString();
+
+    if (currentMonth < 10) {
+      monthComponent = '0' + currentMonth.toString();
     } else {
-      monthComponent = now.month.toString();
+      monthComponent = currentMonth.toString();
     }
 
     if (numReq < 10) {
@@ -45,20 +77,29 @@ class _RequestPageState extends State<RequestPage> {
     } else {
       nR = numReq.toString();
     }
+
     return monthComponent + nR;
   }
 
+  // Date picker widget builder
   Future<Null> _selectDate(BuildContext context) async {
+    DateTime now = DateTime.now();
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-        lastDate: DateTime(DateTime.now().year + 2) // needs adjustment in the future
+        initialDate: now,
+        firstDate: DateTime(now.year, now.month, now.day),
+        lastDate: DateTime(now.year + 2) // needs adjustment in the future
     );
+
+    // Handling illegal dates
     if (picked != null && picked != date)
       setState(() {
-        date = picked;
-        dateString = "$date".split(' ')[0];
+        if (picked.weekday < 6) {
+          date = picked;
+          dateString = '$date'.split(' ')[0];
+        } else {
+          dateString = 'Choose a valid date.'; // does not handle holidays
+        }
       });
   }
 
@@ -101,38 +142,67 @@ class _RequestPageState extends State<RequestPage> {
                     }
                   ),
                   SizedBox(height: 20.0),
-                  Row(
-                    children: <Widget>[
-                      RaisedButton(
-                          child: Text('Pick a date'),
-                          color: Colors.white,
-                          onPressed: () => _selectDate(context)
-                      ),
-
-                      // todo: row alignment
-
-                      Text(("$date".split(' ')[0]))
-                    ],
+                  TextFormField(
+                      decoration: textInputDecoration.copyWith(hintText: 'Link (optional)'),
+                      onChanged: (val) {
+                        setState(() => url = val);
+                      }
                   ),
                   SizedBox(height: 20.0),
-                  TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Link (optional)'),
+                  Container(
+                    width: 300.0,
+                    child: RaisedButton( // todo: add a calendar icon
+                      padding: EdgeInsets.all(20.0),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                      color: Colors.white,
+                      child: Text(
+                          '$dateString',
+                          style: TextStyle(fontSize: 20.0)
+                      ),
+                      onPressed: () => _selectDate(context)
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  DropdownButton(
+                    value: dropdownValue, // error if value is not null when the widget is first built
+                    items: periods.map((period) {
+                      return DropdownMenuItem(
+                        value: period,
+                        child: Text(
+                          '$period',
+                          textAlign: TextAlign.center, // does not work
+                        ),
+                      );
+                    }).toList(),
+                    hint: Text(
+                      'Choose the period',
+                      textAlign: TextAlign.center,
+                    ),
+                    isExpanded: true,
                     onChanged: (val) {
-                      setState(() => url = val);
-                    }
+                      setState(() => period = val);
+                      dropdownValue = val;
+                    },
                   ),
                   SizedBox(height: 20.0),
                   RaisedButton.icon(
-                    onPressed: () async {
+                    onPressed: () async { // too many async functions?
                       if(_formKey.currentState.validate()) {
-                        setState(() {
-                          snDocRef.setData(incrementReqNum());
-                          int numOfRequests = (snapshot.data.documents[0]['numOfRequests'] + 1);
-                          String requestID = generateRequestID(numOfRequests);
-                          requestCollection.document(requestID).setData({
+                        setState(() async {
+
+                          //if (period == null) period = 'No selected period';
+                          int currentMonth = DateTime.now().month;
+
+                          // FATAL EXCEPTION: AsyncTask #8
+                          counterDocRef.setData(updateCounter(currentMonth)); // runs second, supposed to run second todo: fix the order
+                          int numOfRequests = snapshot.data.documents[0]['numOfRequests'];
+                          String requestID = generateRequestID(numOfRequests, currentMonth);
+
+                          requestCollection.document(requestID).setData({ // runs first, supposed to run second. try await?
                             'title': title,
                             'artist': artist,
                             'date': dateString,
+                            'period': period,
                             'url': url,
                             'id': requestID
                           });
