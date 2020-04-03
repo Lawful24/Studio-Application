@@ -121,96 +121,102 @@ class _RequestPageState extends State<RequestPage> {
         stream: requestCollection.snapshots(),
         builder: (context, snapshot) {
           return Container(
-            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+              child: Wrap(
                 children: <Widget>[
-                  TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Title'),
-                    validator: (val) => val.isEmpty ? 'Enter the title' : null,
-                    onChanged: (val) {
-                      setState(() => title = val);
-                    }
-                  ),
-                  SizedBox(height: 20.0),
-                  TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Artist'),
-                    validator: (val) => val.isEmpty ? 'Enter the artist' : null,
-                    onChanged: (val) {
-                      setState(() => artist = val);
-                    }
-                  ),
-                  SizedBox(height: 20.0),
-                  TextFormField(
-                      decoration: textInputDecoration.copyWith(hintText: 'Link (optional)'),
-                      onChanged: (val) {
-                        setState(() => url = val);
-                      }
-                  ),
-                  SizedBox(height: 20.0),
-                  Container(
-                    width: 300.0,
-                    child: RaisedButton( // todo: add a calendar icon
-                      padding: EdgeInsets.all(20.0),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                      color: Colors.white,
-                      child: Text(
-                          '$dateString',
-                          style: TextStyle(fontSize: 20.0)
-                      ),
-                      onPressed: () => _selectDate(context)
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  DropdownButton(
-                    value: dropdownValue, // error if value is not null when the widget is first built
-                    items: periods.map((period) {
-                      return DropdownMenuItem(
-                        value: period,
-                        child: Text(
-                          '$period',
-                          textAlign: TextAlign.center, // does not work
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                            decoration: textInputDecoration.copyWith(hintText: 'Title'),
+                            validator: (val) => val.isEmpty ? 'Enter the title' : null,
+                            onChanged: (val) {
+                              setState(() => title = val);
+                            }
                         ),
-                      );
-                    }).toList(),
-                    hint: Text(
-                      'Choose the period',
-                      textAlign: TextAlign.center,
+                        SizedBox(height: 20.0),
+                        TextFormField(
+                            decoration: textInputDecoration.copyWith(hintText: 'Artist'),
+                            validator: (val) => val.isEmpty ? 'Enter the artist' : null,
+                            onChanged: (val) {
+                              setState(() => artist = val);
+                            }
+                        ),
+                        SizedBox(height: 20.0),
+                        TextFormField(
+                            decoration: textInputDecoration.copyWith(hintText: 'Link (optional)'),
+                            onChanged: (val) {
+                              setState(() => url = val);
+                            }
+                        ),
+                        SizedBox(height: 20.0),
+                        Container(
+                          width: 300.0,
+                          child: RaisedButton( // todo: add a calendar icon
+                              padding: EdgeInsets.all(20.0),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                              color: Colors.white,
+                              child: Text(
+                                  '$dateString',
+                                  style: TextStyle(fontSize: 20.0)
+                              ),
+                              onPressed: () => _selectDate(context)
+                          ),
+                        ),
+                        SizedBox(height: 20.0),
+                        DropdownButton(
+                          value: dropdownValue, // error if value is not null when the widget is first built
+                          items: periods.map((period) {
+                            return DropdownMenuItem(
+                              value: period,
+                              child: Text(
+                                '$period',
+                                textAlign: TextAlign.center, // does not work
+                              ),
+                            );
+                          }).toList(),
+                          hint: Text(
+                            'Choose the period',
+                            textAlign: TextAlign.center,
+                          ),
+                          isExpanded: true,
+                          onChanged: (val) {
+                            setState(() => period = val);
+                            dropdownValue = val;
+                          },
+                        ),
+                        SizedBox(height: 20.0),
+                        RaisedButton.icon(
+                          onPressed: () async { // too many async functions?
+                            if(_formKey.currentState.validate()) {
+                              setState(() async {
+
+                                //if (period == null) period = 'No selected period';
+                                int currentMonth = DateTime.now().month;
+
+                                // FATAL EXCEPTION: AsyncTask #8
+                                counterDocRef.setData(updateCounter(currentMonth)); // runs second, supposed to run second todo: fix the order
+                                int numOfRequests = snapshot.data.documents[0]['numOfRequests'];
+                                String requestID = generateRequestID(numOfRequests, currentMonth);
+
+                                requestCollection.document(requestID).setData({ // runs first, supposed to run second. try await?
+                                  'title': title,
+                                  'artist': artist,
+                                  'date': dateString,
+                                  'period': period,
+                                  'url': url,
+                                  'id': requestID
+                                });
+                              });
+                            }
+                          },
+                          icon: Icon(Icons.send),
+                          label: Text('Submit'),
+                        ),
+                      ],
                     ),
-                    isExpanded: true,
-                    onChanged: (val) {
-                      setState(() => period = val);
-                      dropdownValue = val;
-                    },
-                  ),
-                  SizedBox(height: 20.0),
-                  RaisedButton.icon(
-                    onPressed: () async { // too many async functions?
-                      if(_formKey.currentState.validate()) {
-                        setState(() async {
-
-                          //if (period == null) period = 'No selected period';
-                          int currentMonth = DateTime.now().month;
-
-                          // FATAL EXCEPTION: AsyncTask #8
-                          counterDocRef.setData(updateCounter(currentMonth)); // runs second, supposed to run second todo: fix the order
-                          int numOfRequests = snapshot.data.documents[0]['numOfRequests'];
-                          String requestID = generateRequestID(numOfRequests, currentMonth);
-
-                          requestCollection.document(requestID).setData({ // runs first, supposed to run second. try await?
-                            'title': title,
-                            'artist': artist,
-                            'date': dateString,
-                            'period': period,
-                            'url': url,
-                            'id': requestID
-                          });
-                        });
-                      }
-                    },
-                    icon: Icon(Icons.send),
-                    label: Text('Submit'),
                   ),
                 ],
               ),
