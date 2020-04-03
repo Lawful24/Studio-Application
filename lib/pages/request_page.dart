@@ -105,125 +105,132 @@ class _RequestPageState extends State<RequestPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue[800],
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          'Request',
-          style: TextStyle(
-            color: Colors.blue[800]
-          )
-        ),
-        centerTitle: true,
-      ),
-      body: StreamBuilder(
-        stream: requestCollection.snapshots(),
-        builder: (context, snapshot) {
-          return Container(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-              child: Wrap(
-                children: <Widget>[
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
+    return StreamBuilder(
+      stream: requestCollection.snapshots(),
+      builder: (context, snapshot) {
+        return Scaffold(
+          backgroundColor: Colors.lightBlueAccent[200],
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Text(
+                'Request',
+                style: TextStyle(
+                    color: Colors.blue[800]
+                )
+            ),
+            centerTitle: true,
+          ),
+          body: Wrap(
+            alignment: WrapAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+                child: Column(
+                  children: <Widget>[
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          TextFormField(
                             decoration: textInputDecoration.copyWith(hintText: 'Title'),
                             validator: (val) => val.isEmpty ? 'Enter the title' : null,
                             onChanged: (val) {
                               setState(() => title = val);
                             }
-                        ),
-                        SizedBox(height: 20.0),
-                        TextFormField(
+                          ),
+                          SizedBox(height: 20.0),
+                          TextFormField(
                             decoration: textInputDecoration.copyWith(hintText: 'Artist'),
                             validator: (val) => val.isEmpty ? 'Enter the artist' : null,
                             onChanged: (val) {
                               setState(() => artist = val);
                             }
-                        ),
-                        SizedBox(height: 20.0),
-                        TextFormField(
+                          ),
+                          SizedBox(height: 20.0),
+                          TextFormField(
                             decoration: textInputDecoration.copyWith(hintText: 'Link (optional)'),
                             onChanged: (val) {
                               setState(() => url = val);
                             }
-                        ),
-                        SizedBox(height: 20.0),
-                        Container(
-                          width: 300.0,
-                          child: RaisedButton( // todo: add a calendar icon
+                          ),
+                          SizedBox(height: 20.0),
+                          Container(
+                            width: 300.0,
+                            child: RaisedButton( // todo: add a calendar icon
                               padding: EdgeInsets.all(20.0),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                               color: Colors.white,
                               child: Text(
-                                  '$dateString',
-                                  style: TextStyle(fontSize: 20.0)
+                                '$dateString',
+                                style: TextStyle(fontSize: 20.0)
                               ),
-                              onPressed: () => _selectDate(context)
+                                onPressed: () => _selectDate(context)
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 20.0),
-                        DropdownButton(
-                          value: dropdownValue, // error if value is not null when the widget is first built
-                          items: periods.map((period) {
-                            return DropdownMenuItem(
-                              value: period,
-                              child: Text(
-                                '$period',
-                                textAlign: TextAlign.center, // does not work
-                              ),
-                            );
-                          }).toList(),
-                          hint: Text(
-                            'Choose the period',
-                            textAlign: TextAlign.center,
-                          ),
-                          isExpanded: true,
-                          onChanged: (val) {
-                            setState(() => period = val);
-                            dropdownValue = val;
-                          },
-                        ),
-                        SizedBox(height: 20.0),
-                        RaisedButton.icon(
-                          onPressed: () async { // too many async functions?
-                            if(_formKey.currentState.validate()) {
-                              setState(() async {
-
-                                //if (period == null) period = 'No selected period';
-                                int currentMonth = DateTime.now().month;
-
-                                // FATAL EXCEPTION: AsyncTask #8
-                                counterDocRef.setData(updateCounter(currentMonth)); // runs second, supposed to run second todo: fix the order
-                                int numOfRequests = snapshot.data.documents[0]['numOfRequests'];
-                                String requestID = generateRequestID(numOfRequests, currentMonth);
-
-                                requestCollection.document(requestID).setData({ // runs first, supposed to run second. try await?
-                                  'title': title,
-                                  'artist': artist,
-                                  'date': dateString,
-                                  'period': period,
-                                  'url': url,
-                                  'id': requestID
-                                });
-                              });
-                            }
-                          },
-                          icon: Icon(Icons.send),
-                          label: Text('Submit'),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 20.0),
+                    DropdownButton(
+                      value: dropdownValue, // error if value is not null when the widget is first built
+                      items: periods.map((period) {
+                        return DropdownMenuItem(
+                          value: period,
+                          child: Text(
+                            '$period',
+                            textAlign: TextAlign.center, // does not work
+                            style: TextStyle(
+                                color: Colors.black
+                            )
+                          )
+                        );
+                      }).toList(),
+                      hint: Text(
+                        'Choose the period',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white
+                        )
+                      ),
+                      isExpanded: true,
+                      onChanged: (val) {
+                        setState(() => period = val);
+                        dropdownValue = val;
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.send),
+              onPressed: () async { // too many async functions?
+                if(_formKey.currentState.validate()) {
+                  setState(() async {
+
+                    if (period == null) period = 'No selected period';
+                    int currentMonth = DateTime.now().month;
+
+                    // FATAL EXCEPTION: AsyncTask #8
+                    counterDocRef.setData(updateCounter(currentMonth)); // runs second, supposed to run second todo: fix the order
+                    int numOfRequests = (snapshot.data.documents.length) - 1; // try to delete all the documents HOLY FUCK WHY
+                    String requestID = generateRequestID(numOfRequests, currentMonth);
+
+                    requestCollection.document(requestID).setData({ // runs first, supposed to run second. try await?
+                      'title': title,
+                      'artist': artist,
+                      'date': dateString,
+                      'period': period,
+                      'url': url,
+                      'id': requestID
+                    });
+                  });
+                }
+              }
+          ),
+        );
+      }
     );
   }
 }

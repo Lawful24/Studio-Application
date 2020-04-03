@@ -10,7 +10,7 @@ class _RequestListState extends State<RequestList> {
 
   _buildListItem(BuildContext context, DocumentSnapshot document) {
     return Padding(
-      padding: EdgeInsets.only(top: 8.0),
+      padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
       child: Card(
         margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0),
         child: ListTile( //todo: probably should display a column instead of listtile
@@ -25,8 +25,6 @@ class _RequestListState extends State<RequestList> {
   @override
   Widget build(BuildContext context) {
 
-    //final requests = Provider.of<List<Request>>(context); // accessing the data from the stream todo: rethink this according to the new collections
-
     return StreamBuilder(
         stream: Firestore.instance.collection('requests').snapshots(),
         builder: (context, snapshot) {
@@ -36,8 +34,12 @@ class _RequestListState extends State<RequestList> {
             return ListView.builder(
               itemExtent: 80.0,
               itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) =>
-                  _buildListItem(context, snapshot.data.documents[index]),
+              itemBuilder: (context, index) {
+                if (index == 0) { // a little parkouring to skip the counter document
+                  index++;
+                }
+                return _buildListItem(context, snapshot.data.documents[index]);
+              }
             );
           }
         }
