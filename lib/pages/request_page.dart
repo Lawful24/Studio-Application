@@ -156,11 +156,12 @@ class _RequestPageState extends State<RequestPage> {
                           SizedBox(height: 20.0),
                           Container(
                             width: 300.0,
-                            child: RaisedButton( // todo: add a calendar icon
-                              padding: EdgeInsets.all(20.0),
+                            height: 50.0,
+                            child: RaisedButton.icon( // todo: add a calendar icon
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                               color: Colors.white,
-                              child: Text(
+                              icon: Icon(Icons.date_range),
+                              label: Text(
                                 '$dateString',
                                 style: TextStyle(fontSize: 20.0)
                               ),
@@ -223,7 +224,8 @@ class _RequestPageState extends State<RequestPage> {
                       'date': dateString,
                       'period': period,
                       'url': url,
-                      'id': requestID
+                      'id': requestID,
+                      'isPlayed': false,
                     });
                   });
                 }

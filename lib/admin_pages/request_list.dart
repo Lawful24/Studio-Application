@@ -8,15 +8,47 @@ class RequestList extends StatefulWidget {
 
 class _RequestListState extends State<RequestList> {
 
-  _buildListItem(BuildContext context, DocumentSnapshot document) {
-    return Padding(
-      padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+  _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+    return Center(
       child: Card(
-        margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0),
-        child: ListTile( //todo: probably should display a column instead of listtile
-          leading: Icon(Icons.queue_music),
-          title: Text(document['title']),
-          subtitle: Text(document['artist']),
+        margin: EdgeInsets.fromLTRB(15.0, 6.0, 15.0, 0),
+        child: Wrap(
+          children: <Widget>[
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(Icons.queue_music),
+                  title: Text(snapshot['title']),
+                  subtitle: Text(snapshot['artist']),
+                ),
+                Divider(),
+                ButtonBar(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text(
+                        'Broadcasted',
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                      onPressed: () {
+                        snapshot.reference.setData({
+                          'isPlayed': true
+                        });
+                      },
+                    ),
+                    FlatButton(
+                      child: Text(
+                        'Delete',
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                      onPressed: () {},
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -26,23 +58,32 @@ class _RequestListState extends State<RequestList> {
   Widget build(BuildContext context) {
 
     return StreamBuilder(
-        stream: Firestore.instance.collection('requests').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Text('Out of requests.');
-          } else {
-            return ListView.builder(
-              itemExtent: 80.0,
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) {
-                if (index == 0) { // a little parkouring to skip the counter document
-                  index++;
-                }
-                return _buildListItem(context, snapshot.data.documents[index]);
+      stream: Firestore.instance.collection('requests').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Text('Out of requests.');
+        } else {
+          return ListView.builder(
+            itemExtent: 160.0,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              if (index == 0) { // a little parkouring to skip the counter document
+                index++;
               }
-            );
-          }
+              return Center(
+                child: Column(
+                  children: <Widget>[
+                    // todo: if the request has not been played or deleted yet
+
+
+                    _buildListItem(context, snapshot.data.documents[index])
+                  ],
+                ),
+              );
+            }
+          );
         }
+      }
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:studio_application/admin_pages/admin_history.dart';
 import 'package:studio_application/admin_pages/admin_request_page.dart';
 import 'package:studio_application/services/auth.dart';
 
@@ -28,11 +29,11 @@ class _AdminHomeState extends State<AdminHome> {
         centerTitle: true,
         actions: <Widget>[
           FlatButton.icon(
+            icon: Icon(Icons.person),
+            label: Text('Log out'),
             onPressed: () async {
               await _auth.signOut();
             },
-            icon: Icon(Icons.person),
-            label: Text('Log out'),
           ),
         ],
       ),
@@ -43,14 +44,6 @@ class _AdminHomeState extends State<AdminHome> {
             Container(
               width: menuButtonWidth,
               child: RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AdminRequestPage()),
-                    );
-                  });
-                },
                 padding: EdgeInsets.all(20.0),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                 splashColor: Colors.blue[100],
@@ -60,6 +53,37 @@ class _AdminHomeState extends State<AdminHome> {
                   'Request list',
                   style: TextStyle(fontSize: 20.0),
                 ),
+                onPressed: () {
+                  setState(() {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AdminRequestPage()),
+                    );
+                  });
+                },
+              ),
+            ),
+            SizedBox(height: 20.0),
+            Container(
+              width: menuButtonWidth,
+              child: RaisedButton(
+                padding: EdgeInsets.all(20.0),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                splashColor: Colors.blue[100],
+                color: Colors.white,
+                textColor: Colors.grey[700],
+                child: Text(
+                  'History',
+                  style: TextStyle(fontSize: 20.0),
+                ),
+                onPressed: () {
+                  setState(() {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AdminHistoryPage()),
+                    );
+                  });
+                },
               ),
             ),
           ],
