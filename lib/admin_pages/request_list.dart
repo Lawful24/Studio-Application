@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:studio_application/services/database.dart';
 
 class RequestList extends StatefulWidget {
   @override
@@ -7,6 +8,9 @@ class RequestList extends StatefulWidget {
 }
 
 class _RequestListState extends State<RequestList> {
+
+  int numOfRequests;
+  int isPlayedCount;
 
   _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     return Center(
@@ -32,9 +36,29 @@ class _RequestListState extends State<RequestList> {
                         style: TextStyle(fontSize: 16.0),
                       ),
                       onPressed: () {
-                        snapshot.reference.setData({
+                        snapshot.reference.updateData({
                           'isPlayed': true
                         });
+                        if (snapshot['isPlayed'] == false) {
+                          Firestore.instance.runTransaction((transaction) async {
+                            DocumentSnapshot freshSnap = await transaction.get(DatabaseService.counterDocRef);
+                            transaction.update(DatabaseService.counterDocRef, {
+                              'isPlayedCount': freshSnap.data['isPlayedCount'] + 1
+                            });
+                          });
+                        }
+
+                        // Migrating data to a collection where broadcast requests are stored
+                        Firestore.instance.collection('history').document(snapshot.documentID).setData({
+                          'title': snapshot['title'],
+                          'artist': snapshot['artist'],
+                          'date': snapshot['date'],
+                          'period': snapshot['period'],
+                          'url': snapshot['url'],
+                          'id': snapshot['id'],
+                          'isPlayed': snapshot['isPlayed'],
+                        });
+                        snapshot.reference.delete();
                       },
                     ),
                     FlatButton(
@@ -42,7 +66,15 @@ class _RequestListState extends State<RequestList> {
                         'Delete',
                         style: TextStyle(fontSize: 16.0),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Firestore.instance.runTransaction((transaction) async {
+                          DocumentSnapshot freshSnap = await transaction.get(DatabaseService.counterDocRef);
+                          transaction.update(DatabaseService.counterDocRef, {
+                            'numOfRequests': freshSnap.data['numOfRequests'] - 1
+                          });
+                        });
+                        snapshot.reference.delete();
+                      },
                     )
                   ],
                 ),
@@ -58,32 +90,33 @@ class _RequestListState extends State<RequestList> {
   Widget build(BuildContext context) {
 
     return StreamBuilder(
-      stream: Firestore.instance.collection('requests').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Text('Out of requests.');
-        } else {
-          return ListView.builder(
-            itemExtent: 160.0,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              if (index == 0) { // a little parkouring to skip the counter document
-                index++;
-              }
-              return Center(
-                child: Column(
-                  children: <Widget>[
-                    // todo: if the request has not been played or deleted yet
+        stream: Firestore.instance.collection('requests').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Text('Out of requests.');
+          } else {
+            return ListView.builder(
+                itemExtent: 160.0,
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) {
 
-
-                    _buildListItem(context, snapshot.data.documents[index])
-                  ],
-                ),
-              );
-            }
-          );
+                  // Getting data from the counter document
+                  if (snapshot.data.documents[index]['id'] == '0000') {
+                    numOfRequests = snapshot.data.documents[0]['numOfRequests'];
+                    isPlayedCount = snapshot.data.documents[0]['isPlayedCount'];
+                    return Text('Requests played: ' + '$isPlayedCount' + '/' + '$numOfRequests');
+                  }
+                  return Center(
+                    child: Column(
+                      children: <Widget>[
+                        _buildListItem(context, snapshot.data.documents[index])
+                      ],
+                    ),
+                  );
+                }
+            );
+          }
         }
-      }
     );
   }
 }

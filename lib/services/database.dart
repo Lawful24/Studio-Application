@@ -1,28 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:studio_application/models/request.dart';
 
-class DatabaseService { // nothing else uses this todo: delete?
+class DatabaseService {
 
   final String uid;
-  DatabaseService({ this.uid });
+  DatabaseService({ this.uid }); // do we need a constructor?
 
-  // collection reference
-  final CollectionReference requestCollection = Firestore.instance.collection('requests');
+  // Collection- and document references
+  static final CollectionReference requestCollection = Firestore.instance.collection('requests');
+  static final DocumentReference counterDocRef = requestCollection.document('0000');
+  static final CollectionReference historyCollection = Firestore.instance.collection('history');
 
-  // request list from snapshot
-  Request _requestFromSnapshot(DocumentSnapshot snapshot) {
-    return Request(
-      title: snapshot.data['title'],
-      artist: snapshot.data['artist'],
-      date: snapshot.data['date'],
-      period: snapshot.data['period'],
-      url: snapshot.data['url'] ?? '',
-      id: snapshot.data['id']
-    );
-  }
-
-  //get requests stream
-  Stream<Request> get requests {
-    return requestCollection.document().snapshots().map(_requestFromSnapshot);
+  static wipeOutCollection(String collectionName) {
+    Firestore.instance.collection(collectionName).getDocuments().then((snapshot) {
+      for (DocumentSnapshot document in snapshot.documents) {
+        document.reference.delete();
+      }
+    });
   }
 }
