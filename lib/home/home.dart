@@ -39,7 +39,6 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      //body: SongList(), todo: move this to the blacklist screen once its ready
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

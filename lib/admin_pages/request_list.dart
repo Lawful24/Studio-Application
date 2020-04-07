@@ -11,6 +11,7 @@ class _RequestListState extends State<RequestList> {
 
   int numOfRequests;
   int isPlayedCount;
+  int deletedCount;
 
   _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     return Center(
@@ -49,7 +50,7 @@ class _RequestListState extends State<RequestList> {
                         }
 
                         // Migrating data to a collection where broadcast requests are stored
-                        Firestore.instance.collection('history').document(snapshot.documentID).setData({
+                        DatabaseService.historyCollection.document(snapshot.documentID).setData({
                           'title': snapshot['title'],
                           'artist': snapshot['artist'],
                           'date': snapshot['date'],
@@ -70,7 +71,7 @@ class _RequestListState extends State<RequestList> {
                         Firestore.instance.runTransaction((transaction) async {
                           DocumentSnapshot freshSnap = await transaction.get(DatabaseService.counterDocRef);
                           transaction.update(DatabaseService.counterDocRef, {
-                            'numOfRequests': freshSnap.data['numOfRequests'] - 1
+                            'deletedCount': freshSnap.data['deletedCount'] + 1
                           });
                         });
                         snapshot.reference.delete();
@@ -88,9 +89,8 @@ class _RequestListState extends State<RequestList> {
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder(
-        stream: Firestore.instance.collection('requests').snapshots(),
+        stream: DatabaseService.requestCollection.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Text('Out of requests.');
@@ -102,9 +102,14 @@ class _RequestListState extends State<RequestList> {
 
                   // Getting data from the counter document
                   if (snapshot.data.documents[index]['id'] == '0000') {
+
+                    // Getters of the counter document
                     numOfRequests = snapshot.data.documents[0]['numOfRequests'];
                     isPlayedCount = snapshot.data.documents[0]['isPlayedCount'];
-                    return Text('Requests played: ' + '$isPlayedCount' + '/' + '$numOfRequests');
+                    deletedCount = snapshot.data.documents[0]['deletedCount'];
+
+                    int n = numOfRequests - deletedCount;
+                    return Text('Requests played: ' + '$isPlayedCount' + '/' + '$n');
                   }
                   return Center(
                     child: Column(

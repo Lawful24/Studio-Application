@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:studio_application/models/song.dart';
+import 'package:studio_application/services/database.dart';
 
 class Blacklist extends StatefulWidget {
   @override
@@ -8,9 +10,41 @@ class Blacklist extends StatefulWidget {
 
 class _BlacklistState extends State<Blacklist> {
 
-  List<Song> blacklist = [
-    Song(title: 'Never Gonna Give You Up', artist: 'Rick Astley', duration: '3:33', isExplicit: false),
-  ]; //TODO: import the api
+  _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+    return Center(
+      child: Card(
+        color: Colors.black,
+        margin: EdgeInsets.fromLTRB(15.0, 6.0, 15.0, 0),
+        child: Wrap(
+          children: <Widget>[
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  title: Text(
+                    snapshot['title'],
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                  ),
+                  subtitle: Text(
+                    snapshot['artist'],
+                    style: TextStyle(
+                        color: Colors.white
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,50 +55,33 @@ class _BlacklistState extends State<Blacklist> {
         title: Text(
           'Blacklist',
           style: TextStyle(
-            color: Colors.blue[800]
+              color: Colors.blue[800]
           ),
         ),
         centerTitle: true,
       ),
-      body: ListView.builder(
-        itemCount: blacklist.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
-            child: Card(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 9,
-                          child: Text(
-                            blacklist[index].title
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                              blacklist[index].duration
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 4.0),
-                    Text(
-                      blacklist[index].artist
-                    ),
-                  ],
-                )
-              )
-            )
-          );
-        },
+      body: StreamBuilder(
+        stream: DatabaseService.blacklistCollection.snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Text('There are no songs on the Blacklist.');
+          } else {
+            return ListView.builder(
+              itemExtent: 80.0,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) {
+                return Center(
+                  child: Column(
+                    children: <Widget>[
+                      _buildListItem(context, snapshot.data.documents[index])
+                    ],
+                  ),
+                );
+              }
+            );
+          }
+        }
       )
     );
   }
 }
-//TODO: cards should display the names and artists of the songs

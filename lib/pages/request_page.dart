@@ -21,7 +21,7 @@ class _RequestPageState extends State<RequestPage> {
   // Date picker and drop-down
   DateTime date = DateTime.now();
   String dateString = "${DateTime.now()}".split(' ')[0];
-  static List<String> periods = ['2. (9:40 - 9:45)', '3. (10:35 - 10:55)', '4. (11:40 - 11:50)', '5. (12:35 - 12:45)'];
+  List<String> periods = ['2. (9:40 - 9:45)', '3. (10:35 - 10:55)', '4. (11:40 - 11:50)', '5. (12:35 - 12:45)']; // not a valid solution
   String period = '';
   String dropdownValue;
 
@@ -53,9 +53,21 @@ class _RequestPageState extends State<RequestPage> {
     });
   }
 
+//  static List<String> getPeriodsList () { // not getting the data
+//    List<String> list = new List<String>();
+//
+//    DatabaseService.periodCollection.getDocuments().then((snapshot) {
+//      for (DocumentSnapshot document in snapshot.documents) {
+//        list.add(document['period']);
+//      }
+//    });
+//    return list;
+//  }
+
   // Date picker widget builder
   Future<Null> _selectDate(BuildContext context) async {
     DateTime now = DateTime.now();
+
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: now,
@@ -129,7 +141,7 @@ class _RequestPageState extends State<RequestPage> {
                             Container(
                               width: 300.0,
                               height: 50.0,
-                              child: RaisedButton.icon( // todo: add a calendar icon
+                              child: RaisedButton.icon(
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
                                   color: Colors.white,
                                   icon: Icon(Icons.date_range),
