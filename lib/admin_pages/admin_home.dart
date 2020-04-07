@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:studio_application/admin_pages/admin_blacklist.dart';
+import 'package:studio_application/admin_pages/admin_feedback.dart';
 import 'package:studio_application/admin_pages/admin_history.dart';
 import 'package:studio_application/admin_pages/admin_request_page.dart';
 import 'package:studio_application/services/auth.dart';
@@ -64,7 +65,7 @@ class _AdminHomeState extends State<AdminHome> {
                 },
               ),
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 30.0),
             Container(
               width: menuButtonWidth,
               child: RaisedButton(
@@ -87,7 +88,7 @@ class _AdminHomeState extends State<AdminHome> {
                 },
               ),
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 30.0),
             Container(
               width: menuButtonWidth,
               child: RaisedButton(
@@ -110,6 +111,7 @@ class _AdminHomeState extends State<AdminHome> {
                 },
               ),
             ),
+            SizedBox(height: 30.0),
             Container(
               width: menuButtonWidth,
               child: RaisedButton(
@@ -126,7 +128,7 @@ class _AdminHomeState extends State<AdminHome> {
                   setState(() {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AdminHistoryPage()),
+                      MaterialPageRoute(builder: (context) => AdminFeedbackPage()),
                     );
                   });
                 },

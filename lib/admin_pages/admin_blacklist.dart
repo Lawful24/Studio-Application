@@ -51,7 +51,6 @@ class _AdminBlacklistPageState extends State<AdminBlacklistPage> {
                   color: Colors.black,
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
-
                       DatabaseService.blacklistCollection.add({
                         'title': _title,
                         'artist': _artist

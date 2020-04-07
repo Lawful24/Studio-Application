@@ -11,6 +11,7 @@ class DatabaseService {
   static final CollectionReference historyCollection = Firestore.instance.collection('history');
   static final CollectionReference periodCollection = Firestore.instance.collection('periods');
   static final CollectionReference blacklistCollection = Firestore.instance.collection('blacklist');
+  static final CollectionReference feedbackCollection = Firestore.instance.collection('feedback');
 
   static wipeOutCollection(String collectionName) {
     Firestore.instance.collection(collectionName).getDocuments().then((snapshot) {

@@ -65,7 +65,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            SizedBox(height: 30.0,),
+            SizedBox(height: 30.0),
             Container(
               width: menuButtonWidth,
               child: RaisedButton(
@@ -88,7 +88,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            SizedBox(height: 30.0,),
+            SizedBox(height: 30.0),
             Container(
               width: menuButtonWidth,
               child: RaisedButton(
@@ -109,7 +109,7 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            SizedBox(height: 30.0,),
+            SizedBox(height: 30.0),
             Container(
               width: menuButtonWidth,
               child: RaisedButton(

@@ -40,26 +40,26 @@ class _BlacklistListState extends State<BlacklistList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: DatabaseService.blacklistCollection.snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Text('No songs in the Blacklist.');
-          } else {
-            return ListView.builder(
-                itemExtent: 80.0,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  return Center(
-                    child: Column(
-                      children: <Widget>[
-                        _buildListItem(context, snapshot.data.documents[index])
-                      ],
-                    ),
-                  );
-                }
-            );
-          }
+      stream: DatabaseService.blacklistCollection.snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Text('No songs in the Blacklist.');
+        } else {
+          return ListView.builder(
+              itemExtent: 80.0,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) {
+                return Center(
+                  child: Column(
+                    children: <Widget>[
+                      _buildListItem(context, snapshot.data.documents[index])
+                    ],
+                  ),
+                );
+              }
+          );
         }
+      }
     );
   }
 }
