@@ -199,8 +199,8 @@ class _RequestPageState extends State<RequestPage> {
 
                       // FATAL EXCEPTION: AsyncTask #8
                       DatabaseService.counterDocRef.setData(updateCounter(currentMonth)); // runs second, supposed to run second
-                      int numOfRequests = (snapshot.data.documents[0]['numOfRequests']);
-                      String requestID = generateRequestID(numOfRequests, currentMonth);
+                      int numOfRequests = snapshot.data.documents[0]['numOfRequests'];
+                      String requestID = DatabaseService.generateRequestID(numOfRequests, currentMonth);
 
                       DatabaseService.requestCollection.document(requestID).setData({ // runs first, supposed to run second. try await?
                         'title': title,
@@ -208,7 +208,6 @@ class _RequestPageState extends State<RequestPage> {
                         'date': dateString,
                         'period': period,
                         'url': url,
-                        'id': requestID,
                         'isPlayed': false,
                       });
                     });

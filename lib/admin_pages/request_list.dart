@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:studio_application/services/database.dart';
+import 'package:studio_application/shared/constants.dart';
 
 class RequestList extends StatefulWidget {
   @override
@@ -50,13 +51,15 @@ class _RequestListState extends State<RequestList> {
                         }
 
                         // Migrating data to a collection where broadcast requests are stored
+                        // isPlayedCount = snapshot.data.documents[0]['isPlayedCount']; // todo: read needed here
+                        int currentMonth = DateTime.now().month;
+                        String historyID = DatabaseService.generateRequestID(isPlayedCount, currentMonth);
                         DatabaseService.historyCollection.document(snapshot.documentID).setData({
                           'title': snapshot['title'],
                           'artist': snapshot['artist'],
                           'date': snapshot['date'],
                           'period': snapshot['period'],
                           'url': snapshot['url'],
-                          'id': snapshot['id'],
                           'isPlayed': snapshot['isPlayed'],
                         });
                         snapshot.reference.delete();
@@ -107,8 +110,8 @@ class _RequestListState extends State<RequestList> {
                     numOfRequests = snapshot.data.documents[0]['numOfRequests'];
                     isPlayedCount = snapshot.data.documents[0]['isPlayedCount'];
                     deletedCount = snapshot.data.documents[0]['deletedCount'];
-
                     int n = numOfRequests - deletedCount;
+
                     return Text('Requests played: ' + '$isPlayedCount' + '/' + '$n');
                   }
                   return Center(

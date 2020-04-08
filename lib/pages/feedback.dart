@@ -32,6 +32,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         child: Form(
           key: _formKey,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextFormField(
                 decoration: textInputDecoration.copyWith(

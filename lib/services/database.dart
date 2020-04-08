@@ -20,4 +20,24 @@ class DatabaseService {
       }
     });
   }
+
+  // Custom ID generator
+  static String generateRequestID(int num, int currentMonth) {
+    String monthComponent;
+    String nR;
+
+    if (currentMonth < 10) {
+      monthComponent = '0' + currentMonth.toString();
+    } else {
+      monthComponent = currentMonth.toString();
+    }
+
+    if (num < 10) {
+      nR = '0' + num.toString();
+    } else {
+      nR = num.toString();
+    }
+
+    return monthComponent + nR;
+  }
 }
