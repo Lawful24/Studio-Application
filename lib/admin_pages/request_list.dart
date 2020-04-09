@@ -47,14 +47,13 @@ class _RequestListState extends State<RequestList> {
                             transaction.update(DatabaseService.counterDocRef, {
                               'isPlayedCount': freshSnap.data['isPlayedCount'] + 1
                             });
+                            isPlayedCount = freshSnap.data['isPlayedCount'];
                           });
                         }
 
                         // Migrating data to a collection where broadcast requests are stored
-                        // isPlayedCount = snapshot.data.documents[0]['isPlayedCount']; // todo: read needed here
-                        int currentMonth = DateTime.now().month;
-                        String historyID = DatabaseService.generateRequestID(isPlayedCount, currentMonth);
-                        DatabaseService.historyCollection.document(snapshot.documentID).setData({
+                        String historyID = DatabaseService.generateRequestID(isPlayedCount, DateTime.now().month);
+                        DatabaseService.historyCollection.document(historyID).setData({
                           'title': snapshot['title'],
                           'artist': snapshot['artist'],
                           'date': snapshot['date'],

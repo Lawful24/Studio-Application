@@ -50,7 +50,7 @@ class _HistoryListState extends State<HistoryList> {
                   return Center(
                     child: Column(
                       children: <Widget>[
-                        _buildListItem(context, snapshot.data.documents[index])
+                        _buildListItem(context, snapshot.data.documents[snapshot.data.documents.length - index - 1])
                       ],
                     ),
                   );

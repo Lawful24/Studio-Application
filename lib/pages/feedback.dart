@@ -11,6 +11,7 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   final _formKey = GlobalKey<FormState>();
 
+  String feedbackID = '';
   String _message = '';
 
   @override
@@ -47,8 +48,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
               RaisedButton.icon(
                 label: Text('Send message'),
                 icon: Icon(Icons.mail_outline),
-                onPressed: () {
-                  DatabaseService.feedbackCollection.add({
+                onPressed: () async {
+                  int feedbackCount = await DatabaseService.historyCollection.snapshots().length;
+                  feedbackID = DatabaseService.generateRequestID(feedbackCount, DateTime.now().month);
+                  DatabaseService.feedbackCollection.document(feedbackID).setData({
                     'message': _message
                   });
                 },

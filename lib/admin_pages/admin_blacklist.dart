@@ -12,6 +12,7 @@ class _AdminBlacklistPageState extends State<AdminBlacklistPage> {
 
   final _formKey = GlobalKey<FormState>();
 
+  String blacklistID = '';
   String _title = '';
   String _artist = '';
 
@@ -49,9 +50,11 @@ class _AdminBlacklistPageState extends State<AdminBlacklistPage> {
                     ),
                   ),
                   color: Colors.black,
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState.validate()) {
-                      DatabaseService.blacklistCollection.add({
+                      int blacklistCount = await DatabaseService.blacklistCollection.snapshots().length;
+                      blacklistID = DatabaseService.generateRequestID(blacklistCount, DateTime.now().month);
+                      DatabaseService.blacklistCollection.document(blacklistID).setData({
                         'title': _title,
                         'artist': _artist
                       });
