@@ -23,7 +23,7 @@ class _AdminHomeState extends State<AdminHome> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'Main Menu',
+          'Admin Main Menu',
           style: TextStyle(
               color: Colors.blue[800]
           ),

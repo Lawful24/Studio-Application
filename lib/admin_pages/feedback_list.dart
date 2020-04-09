@@ -10,16 +10,24 @@ class FeedbackList extends StatefulWidget {
 class _FeedbackListState extends State<FeedbackList> {
 
   _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
-    return Center(
-      child: Container(
-        child: Wrap(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(snapshot['message']),
+    return Card(
+      margin: EdgeInsets.fromLTRB(15.0, 6.0, 15.0, 0),
+      child: Wrap(
+        children: <Widget>[
+          ListTile(
+            title: Text(snapshot['message']),
+            // subtitle: [the user's email address] // for future development
+            trailing: Container(
+              padding: EdgeInsets.all(5.0),
+              child: FloatingActionButton(
+                child: Icon(Icons.done),
+                onPressed: () {
+                  snapshot.reference.delete();
+                }
+              ),
             )
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -30,10 +38,25 @@ class _FeedbackListState extends State<FeedbackList> {
         stream: DatabaseService.feedbackCollection.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Text('No new messages.');
+            return Center(
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    Text(
+                      'No new messages.',
+                      style: TextStyle(
+                        color: Colors.blue[800],
+                        fontSize: 20.0,
+                        fontFamily: 'Rubik'
+                      )
+                    )
+                  ],
+                )
+              ),
+            );
           } else {
             return ListView.builder(
-              itemExtent: 100.0,
+              itemExtent: 80.0,
               itemCount: snapshot.data.documents.length,
               itemBuilder: (context, index) {
                 return Center(

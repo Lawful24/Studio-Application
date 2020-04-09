@@ -4,9 +4,12 @@ const textInputDecoration = InputDecoration(
   fillColor: Colors.white,
   filled: true,
   enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.black, width: 2.0),
+    borderSide: BorderSide(color: Colors.black, width: 1.0)
   ),
   focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.pink, width: 2.0),
-  ),
+    borderSide: BorderSide(color: Colors.cyanAccent, width: 1.0)
+  )
 );
+
+TextEditingController controller = new TextEditingController();
+TextEditingController secondController = new TextEditingController();

@@ -11,7 +11,11 @@ class _AdminRequestPageState extends State<AdminRequestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Song Requests'),
+        centerTitle: true
+      ),
+      backgroundColor: Colors.lightBlueAccent[200],
       body: RequestList()
     );
   }

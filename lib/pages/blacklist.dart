@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:studio_application/models/song.dart';
 import 'package:studio_application/services/database.dart';
 
 class Blacklist extends StatefulWidget {
@@ -33,10 +32,6 @@ class _BlacklistState extends State<Blacklist> {
                         color: Colors.white
                     ),
                   ),
-                  trailing: Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  ),
                 ),
               ],
             ),
@@ -64,7 +59,22 @@ class _BlacklistState extends State<Blacklist> {
         stream: DatabaseService.blacklistCollection.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Text('There are no songs on the Blacklist.');
+            return Center(
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    Text(
+                      'No songs in the Blacklist.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontFamily: 'Rubik'
+                      )
+                    )
+                  ],
+                )
+              ),
+            );
           } else {
             return ListView.builder(
               itemExtent: 80.0,

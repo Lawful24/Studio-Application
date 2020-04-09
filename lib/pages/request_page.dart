@@ -15,7 +15,6 @@ class _RequestPageState extends State<RequestPage> {
   // Text field state
   String title = '';
   String artist = '';
-  String url = '';
   String error = '';
 
   // Date picker and drop-down
@@ -53,17 +52,6 @@ class _RequestPageState extends State<RequestPage> {
     });
   }
 
-//  static List<String> getPeriodsList () { // not getting the data
-//    List<String> list = new List<String>();
-//
-//    DatabaseService.periodCollection.getDocuments().then((snapshot) {
-//      for (DocumentSnapshot document in snapshot.documents) {
-//        list.add(document['period']);
-//      }
-//    });
-//    return list;
-//  }
-
   // Date picker widget builder
   Future<Null> _selectDate(BuildContext context) async {
     DateTime now = DateTime.now();
@@ -92,130 +80,126 @@ class _RequestPageState extends State<RequestPage> {
     return StreamBuilder(
         stream: DatabaseService.requestCollection.snapshots(),
         builder: (context, snapshot) {
-          return Scaffold(
-            backgroundColor: Colors.lightBlueAccent[200],
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              title: Text(
-                  'Request',
-                  style: TextStyle(
-                      color: Colors.blue[800]
-                  )
-              ),
-              centerTitle: true,
+        return Scaffold(
+          backgroundColor: Colors.lightBlueAccent[200],
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            title: Text(
+                'Request',
+                style: TextStyle(
+                    color: Colors.blue[800]
+                )
             ),
-            body: Wrap(
-              alignment: WrapAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-                  child: Column(
-                    children: <Widget>[
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: <Widget>[
-                            TextFormField(
-                                decoration: textInputDecoration.copyWith(hintText: 'Title'),
-                                validator: (val) => val.isEmpty ? 'Enter the title' : null,
-                                onChanged: (val) {
-                                  setState(() => title = val);
-                                }
-                            ),
-                            SizedBox(height: 20.0),
-                            TextFormField(
-                                decoration: textInputDecoration.copyWith(hintText: 'Artist'),
-                                validator: (val) => val.isEmpty ? 'Enter the artist' : null,
-                                onChanged: (val) {
-                                  setState(() => artist = val);
-                                }
-                            ),
-                            SizedBox(height: 20.0),
-                            TextFormField(
-                                decoration: textInputDecoration.copyWith(hintText: 'Link (optional)'),
-                                onChanged: (val) {
-                                  setState(() => url = val);
-                                }
-                            ),
-                            SizedBox(height: 20.0),
-                            Container(
-                              width: 300.0,
-                              height: 50.0,
-                              child: RaisedButton.icon(
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                                  color: Colors.white,
-                                  icon: Icon(Icons.date_range),
-                                  label: Text(
-                                      '$dateString',
-                                      style: TextStyle(fontSize: 20.0)
-                                  ),
-                                  onPressed: () => _selectDate(context)
+            centerTitle: true,
+          ),
+          body: Wrap(
+            alignment: WrapAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+                child: Column(
+                  children: <Widget>[
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          TextFormField(
+                            decoration: textInputDecoration.copyWith(hintText: 'Title'),
+                            validator: (val) => val.isEmpty ? 'Enter the title' : null,
+                            controller: controller,
+                            onChanged: (val) {
+                              setState(() => title = val);
+                            }
+                          ),
+                          SizedBox(height: 20.0),
+                          TextFormField(
+                            decoration: textInputDecoration.copyWith(hintText: 'Artist'),
+                            validator: (val) => val.isEmpty ? 'Enter the artist' : null,
+                            controller: secondController,
+                            onChanged: (val) {
+                              setState(() => artist = val);
+                            }
+                          ),
+                          SizedBox(height: 20.0),
+                          Container(
+                            width: 300.0,
+                            height: 50.0,
+                            child: RaisedButton.icon(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                              color: Colors.white,
+                              icon: Icon(Icons.date_range),
+                              label: Text(
+                                '$dateString',
+                                style: TextStyle(fontSize: 20.0)
                               ),
+                              onPressed: () => _selectDate(context)
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 20.0),
-                      DropdownButton(
-                        value: dropdownValue, // error if value is not null when the widget is first built
-                        items: periods.map((period) {
-                          return DropdownMenuItem(
-                              value: period,
-                              child: Text(
-                                  '$period',
-                                  textAlign: TextAlign.center, // does not work
-                                  style: TextStyle(
-                                      color: Colors.black
-                                  )
-                              )
-                          );
-                        }).toList(),
-                        hint: Text(
-                            'Choose the period',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.white
+                    ),
+                    SizedBox(height: 20.0),
+                    DropdownButton(
+                      value: dropdownValue, // error if value is not null when the widget is first built
+                      items: periods.map((period) {
+                        return DropdownMenuItem(
+                            value: period,
+                            child: Text(
+                                '$period',
+                                textAlign: TextAlign.center, // does not work
+                                style: TextStyle(
+                                    color: Colors.black
+                                )
                             )
-                        ),
-                        isExpanded: true,
-                        onChanged: (val) {
-                          setState(() => period = val);
-                          dropdownValue = val;
-                        },
+                        );
+                      }).toList(),
+                      hint: Text(
+                        'Choose the period',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white
+                        )
                       ),
-                    ],
-                  ),
+                      isExpanded: true,
+                      onChanged: (val) {
+                        setState(() => period = val);
+                        dropdownValue = val;
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            floatingActionButton: FloatingActionButton(
-                child: Icon(Icons.send),
-                onPressed: () async { // too many async functions?
-                  if(_formKey.currentState.validate()) {
-                    setState(() async {
+              ),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.send),
+            onPressed: () async { // too many async functions?
+              if(_formKey.currentState.validate()) {
+                setState(() async {
 
-                      if (period == null) period = 'No selected period';
-                      int currentMonth = DateTime.now().month;
+                  if (period == null) period = 'No selected period';
+                  int currentMonth = DateTime.now().month;
 
-                      // FATAL EXCEPTION: AsyncTask #8
-                      DatabaseService.counterDocRef.setData(updateCounter(currentMonth)); // runs second, supposed to run second
-                      int numOfRequests = snapshot.data.documents[0]['numOfRequests'];
-                      String requestID = DatabaseService.generateRequestID(numOfRequests, currentMonth);
+                  // FATAL EXCEPTION: AsyncTask #8
+                  DatabaseService.counterDocRef.setData(updateCounter(currentMonth)); // runs second, supposed to run second
+                  int numOfRequests = snapshot.data.documents[0]['numOfRequests'];
+                  String requestID = DatabaseService.generateRequestID(numOfRequests, currentMonth);
 
-                      DatabaseService.requestCollection.document(requestID).setData({ // runs first, supposed to run second. try await?
-                        'title': title,
-                        'artist': artist,
-                        'date': dateString,
-                        'period': period,
-                        'url': url,
-                        'isPlayed': false,
-                      });
-                    });
-                  }
-                }
-            ),
-          );
-        }
+                  DatabaseService.requestCollection.document(requestID).setData({ // runs first, supposed to run second. try await?
+                    'title': title,
+                    'artist': artist,
+                    'date': dateString,
+                    'period': period,
+                    'isPlayed': false,
+                  });
+                });
+              }
+              controller.text = '';
+              secondController.text = '';
+            }
+          ),
+        );
+      }
     );
   }
 }

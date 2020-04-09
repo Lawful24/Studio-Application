@@ -29,12 +29,14 @@ class _AdminBlacklistPageState extends State<AdminBlacklistPage> {
                 TextFormField(
                     decoration: textInputDecoration.copyWith(hintText: 'Title'),
                     validator: (val) => val.isEmpty ? 'Enter a title' : null,
+                    controller: controller,
                     onChanged: (val) => setState(() => _title = val)
                 ),
                 SizedBox(height: 20),
                 TextFormField(
                     decoration: textInputDecoration.copyWith(hintText: 'Artist'),
                     validator: (val) => val.isEmpty ? 'Enter an artist' : null,
+                    controller: secondController,
                     onChanged: (val) => setState(() => _artist = val)
                 ),
                 SizedBox(height: 20),
@@ -52,13 +54,13 @@ class _AdminBlacklistPageState extends State<AdminBlacklistPage> {
                   color: Colors.black,
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
-                      int blacklistCount = await DatabaseService.blacklistCollection.snapshots().length;
-                      blacklistID = DatabaseService.generateRequestID(blacklistCount, DateTime.now().month);
-                      DatabaseService.blacklistCollection.document(blacklistID).setData({
+                      DatabaseService.blacklistCollection.add({
                         'title': _title,
                         'artist': _artist
                       });
                     }
+                    controller.text = '';
+                    secondController.text = '';
                   },
                 )
               ],

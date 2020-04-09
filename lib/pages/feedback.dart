@@ -38,20 +38,21 @@ class _FeedbackPageState extends State<FeedbackPage> {
               TextFormField(
                 decoration: textInputDecoration.copyWith(
                   hintText: 'Message us! Tell us what you think!',
-                  contentPadding: EdgeInsets.symmetric(vertical: 50.0),
+                  contentPadding: EdgeInsets.symmetric(vertical: 30.0),
                 ),
                 validator: (val) => val.isEmpty ? 'This cannot remain blank' : null,
                 textAlign: TextAlign.center, //todo: format this so that the text is broken into lines and starts at the top left corner
+                maxLength: 70,
+                controller: controller,
                 onChanged: (val) => setState(() => _message = val),
               ),
-              SizedBox(height: 20.0),
+              SizedBox(height: 10.0),
               RaisedButton.icon(
-                label: Text('Send message'),
+                label: Text('Submit message'),
                 icon: Icon(Icons.mail_outline),
                 onPressed: () async {
-                  int feedbackCount = await DatabaseService.historyCollection.snapshots().length;
-                  feedbackID = DatabaseService.generateRequestID(feedbackCount, DateTime.now().month);
-                  DatabaseService.feedbackCollection.document(feedbackID).setData({
+                  controller.text = '';
+                  DatabaseService.feedbackCollection.document().setData({
                     'message': _message
                   });
                 },

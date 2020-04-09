@@ -1,5 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:studio_application/models/user.dart';
+
+class User {
+
+  final String uid;
+
+  User({ this.uid });
+
+}
 
 class AuthService {
 

@@ -11,7 +11,7 @@ class _HistoryListState extends State<HistoryList> {
 
   int isPlayedCount;
 
-  _buildListItem(BuildContext context, DocumentSnapshot document) {
+  _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     return Center(
       child: Card(
         margin: EdgeInsets.fromLTRB(15.0, 6.0, 15.0, 0),
@@ -22,8 +22,15 @@ class _HistoryListState extends State<HistoryList> {
               children: <Widget>[
                 ListTile(
                   leading: Icon(Icons.queue_music),
-                  title: Text(document['title']),
-                  subtitle: Text(document['artist']),
+                  title: Text(snapshot['title']),
+                  subtitle: Text(snapshot['artist']),
+                  trailing: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(snapshot['date']),
+                      Text(snapshot['period'])
+                    ],
+                  )
                 ),
               ],
             ),
@@ -39,22 +46,36 @@ class _HistoryListState extends State<HistoryList> {
     return StreamBuilder(
         stream: DatabaseService.historyCollection.snapshots(),
         builder: (context, snapshot) {
-
           if (!snapshot.hasData) {
-            return const Text('No broadcast history this month.');
+            return Center(
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    Text(
+                      'No broadcast history this month.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontFamily: 'Rubik'
+                      )
+                    )
+                  ],
+                )
+              ),
+            );
           } else {
             return ListView.builder(
-                itemExtent: 80.0,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  return Center(
-                    child: Column(
-                      children: <Widget>[
-                        _buildListItem(context, snapshot.data.documents[snapshot.data.documents.length - index - 1])
-                      ],
-                    ),
-                  );
-                }
+              itemExtent: 80.0,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) {
+                return Center(
+                  child: Column(
+                    children: <Widget>[
+                      _buildListItem(context, snapshot.data.documents[snapshot.data.documents.length - index - 1])
+                    ],
+                  ),
+                );
+              }
             );
           }
         }

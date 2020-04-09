@@ -27,6 +27,13 @@ class _RequestListState extends State<RequestList> {
                   leading: Icon(Icons.queue_music),
                   title: Text(snapshot['title']),
                   subtitle: Text(snapshot['artist']),
+                  trailing: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(snapshot['date']),
+                      Text(snapshot['period'])
+                    ],
+                  )
                 ),
                 Divider(),
                 ButtonBar(
@@ -58,7 +65,6 @@ class _RequestListState extends State<RequestList> {
                           'artist': snapshot['artist'],
                           'date': snapshot['date'],
                           'period': snapshot['period'],
-                          'url': snapshot['url'],
                           'isPlayed': snapshot['isPlayed'],
                         });
                         snapshot.reference.delete();
@@ -95,7 +101,22 @@ class _RequestListState extends State<RequestList> {
         stream: DatabaseService.requestCollection.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Text('Out of requests.');
+            return Center(
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    Text(
+                      'Out of requests.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30.0,
+                        fontFamily: 'Rubik'
+                      )
+                    )
+                  ],
+                )
+              ),
+            );
           } else {
             return ListView.builder(
                 itemExtent: 160.0,
@@ -111,7 +132,23 @@ class _RequestListState extends State<RequestList> {
                     deletedCount = snapshot.data.documents[0]['deletedCount'];
                     int n = numOfRequests - deletedCount;
 
-                    return Text('Requests played: ' + '$isPlayedCount' + '/' + '$n');
+                    return Center(
+                      child: Container(
+                        child: Wrap(
+                          children: <Widget>[
+                            Text(
+                              'Requests played: ' + '$isPlayedCount' + '/' + '$n',
+                              style: TextStyle(
+                                color: Colors.white,
+                                //fontWeight: FontWeight.bold,
+                                fontSize: 30.0,
+                                fontFamily: 'Rubik'
+                              )
+                            )
+                          ],
+                        )
+                      ),
+                    );
                   }
                   return Center(
                     child: Column(

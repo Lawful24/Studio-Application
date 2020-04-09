@@ -11,7 +11,12 @@ class _AdminHistoryPageState extends State<AdminHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text('Request History'),
+          centerTitle: true,
+          backgroundColor: Colors.blue[800]
+        ),
+        backgroundColor: Colors.blue[800],
         body: HistoryList()
     );
   }

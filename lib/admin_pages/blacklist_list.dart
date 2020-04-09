@@ -43,7 +43,22 @@ class _BlacklistListState extends State<BlacklistList> {
       stream: DatabaseService.blacklistCollection.snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Text('No songs in the Blacklist.');
+          return Center(
+            child: Container(
+              child: Wrap(
+                children: <Widget>[
+                  Text(
+                    'No songs in the Blacklist.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontFamily: 'Rubik'
+                    )
+                  )
+                ],
+              )
+            ),
+          );
         } else {
           return ListView.builder(
               itemExtent: 80.0,
