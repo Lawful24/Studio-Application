@@ -36,6 +36,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: "^0.7.4"
+
+flutter_icons:
+  image_path: "assets/icon.png"
+  ios: false
+  android: true
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -67,7 +74,15 @@ flutter:
    - family: Rubik
      fonts:
        - asset: fonts/Rubik-Regular.ttf
-
+       - asset: fonts/Rubik-Black.ttf
+       - asset: fonts/Rubik-BlackItalic.ttf
+       - asset: fonts/Rubik-Bold.ttf
+       - asset: fonts/Rubik-BoldItalic.ttf
+       - asset: fonts/Rubik-Italic.ttf
+       - asset: fonts/Rubik-Light.ttf
+       - asset: fonts/Rubik-LightItalic.ttf
+       - asset: fonts/Rubik-Medium.ttf
+       - asset: fonts/Rubik-MediumItalic.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

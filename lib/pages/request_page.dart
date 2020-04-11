@@ -57,22 +57,22 @@ class _RequestPageState extends State<RequestPage> {
     DateTime now = DateTime.now();
 
     final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: now,
-        firstDate: DateTime(now.year, now.month, now.day),
-        lastDate: DateTime(now.year + 2) // needs adjustment in the future
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(now.year, now.month, now.day),
+      lastDate: DateTime(now.year + 2) // needs adjustment in the future
     );
 
     // Handling illegal dates
     if (picked != null && picked != date)
-      setState(() {
-        if (picked.weekday < 6) {
-          date = picked;
-          dateString = '$date'.split(' ')[0];
-        } else {
-          dateString = 'Choose a valid date.'; // does not handle holidays
-        }
-      });
+    setState(() {
+      if (picked.weekday < 6) {
+        date = picked;
+        dateString = '$date'.split(' ')[0];
+      } else {
+        dateString = 'Choose a valid date.'; // does not handle holidays
+      }
+    });
   }
 
   @override
@@ -85,10 +85,10 @@ class _RequestPageState extends State<RequestPage> {
           appBar: AppBar(
             backgroundColor: Colors.white,
             title: Text(
-                'Request',
-                style: TextStyle(
-                    color: Colors.blue[800]
-                )
+              'Request',
+              style: TextStyle(
+                  color: Colors.blue[800]
+              )
             ),
             centerTitle: true,
           ),
@@ -143,14 +143,14 @@ class _RequestPageState extends State<RequestPage> {
                       value: dropdownValue, // error if value is not null when the widget is first built
                       items: periods.map((period) {
                         return DropdownMenuItem(
-                            value: period,
-                            child: Text(
-                                '$period',
-                                textAlign: TextAlign.center, // does not work
-                                style: TextStyle(
-                                    color: Colors.black
-                                )
+                          value: period,
+                          child: Text(
+                            '$period',
+                            textAlign: TextAlign.center, // does not work
+                            style: TextStyle(
+                              color: Colors.black
                             )
+                          )
                         );
                       }).toList(),
                       hint: Text(

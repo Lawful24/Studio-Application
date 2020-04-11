@@ -28,38 +28,42 @@ class _FeedbackPageState extends State<FeedbackPage> {
         ),
         centerTitle: true,
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                decoration: textInputDecoration.copyWith(
-                  hintText: 'Message us! Tell us what you think!',
-                  contentPadding: EdgeInsets.symmetric(vertical: 30.0),
-                ),
-                validator: (val) => val.isEmpty ? 'This cannot remain blank' : null,
-                textAlign: TextAlign.center, //todo: format this so that the text is broken into lines and starts at the top left corner
-                maxLength: 70,
-                controller: controller,
-                onChanged: (val) => setState(() => _message = val),
+      body: Wrap(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TextFormField(
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Message us! Tell us what you think!',
+                      contentPadding: EdgeInsets.symmetric(vertical: 30.0),
+                    ),
+                    validator: (val) => val.isEmpty ? 'This cannot remain blank' : null,
+                    textAlign: TextAlign.center, //todo: format this so that the text is broken into lines and starts at the top left corner
+                    maxLength: 70,
+                    controller: controller,
+                    onChanged: (val) => setState(() => _message = val),
+                  ),
+                  SizedBox(height: 10.0),
+                  RaisedButton.icon(
+                    label: Text('Submit message'),
+                    icon: Icon(Icons.mail_outline),
+                    onPressed: () async {
+                      controller.text = '';
+                      DatabaseService.feedbackCollection.document().setData({
+                        'message': _message
+                      });
+                    },
+                  ),
+                ],
               ),
-              SizedBox(height: 10.0),
-              RaisedButton.icon(
-                label: Text('Submit message'),
-                icon: Icon(Icons.mail_outline),
-                onPressed: () async {
-                  controller.text = '';
-                  DatabaseService.feedbackCollection.document().setData({
-                    'message': _message
-                  });
-                },
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       )
     );
   }
